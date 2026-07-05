@@ -1,7 +1,7 @@
 ---
 title: "Balanço de Pagamentos - Brasil (2000–2020)"
 authors: "Manoel Alves & Suzy Oliveira"
-date: 04/07/2026
+date: 07/04/2026
 format:
   html:
     toc: true
@@ -75,23 +75,20 @@ Este relatório apresenta a evolução da variação percentual anual do volume 
 ```{r}
 #| message: false
 #| warning: false
-#| echo: false
+#| echo: true
 #| label: bloco-carga-dados
 
 library(tidyverse)
 library(readxl)
 library(kableExtra)
 
-# ==========================================
-# 1. CARREGAMENTO DOS DADOS (readxl)
-# ==========================================
-# Mudamos para ler diretamente o arquivo Excel pulando as linhas decorativas
+
 pib_anual <- read_excel("C:/Users/manoe/Downloads/tabela6784 (1).xlsx", skip = 3, col_names = FALSE) %>%
   select(
-    ano_pib = 2,  # Posição física da coluna de Anos
-    variacao = 3  # Posição física da coluna de Valores (%)
+    ano_pib = 2,
+    variacao = 3  
   ) %>%
-  # Limpa linhas vazias, de rodapé textuais ou metadados do IBGE
+
   filter(!is.na(ano_pib) & !is.na(variacao)) %>%
   mutate(
     ano_pib = as.numeric(ano_pib),
@@ -106,7 +103,7 @@ pib_anual <- read_excel("C:/Users/manoe/Downloads/tabela6784 (1).xlsx", skip = 3
 ```{r}
 #| message: false
 #| warning: false
-#| echo: false
+#| echo: true
 #| label: bloco-tabela-pib
 
 
@@ -149,7 +146,7 @@ pib_anual %>%
 
 ```{r}
 #| warning: false
-#| echo: false
+#| echo: true
 #| message: false
 #| label: bloco-grafico-pib
 
@@ -238,6 +235,7 @@ A interseção desses temas reside no fato de que os fatores estruturais identif
 
 ```{r}
 #| label: destaques-pib
+#| echo: true
 
 max_pib <- pib_anual[which.max(pib_anual$variacao), ]
 min_pib <- pib_anual[which.min(pib_anual$variacao), ]
@@ -257,7 +255,7 @@ anos_negativos <- sum(pib_anual$variacao < 0)
 
 ```{r}
 #| label: load-data
-
+#| echo: true
 df <- read_excel("C:/Users/manoe/Downloads/V_EXPORTACAO_GERAL_2000-01_2020-12_DT20260607.xlsx")
 
 colnames(df) <- c("ano", "valor_fob")
@@ -272,7 +270,7 @@ df <- df |>
 
 ```{r}
 #| label: tabela
-
+#| echo: true
 df |>
   mutate(
     valor_fmt = dollar(valor_fob, prefix = "US$ ", big.mark = ".", decimal.mark = ",", accuracy = 1),
@@ -314,7 +312,7 @@ Entre 2010 e 2011, observa-se uma retomada vigorosa, culminando no pico da séri
 
 ```{r}
 #| label: destaques
-
+#| echo: true
 max_row <- df[which.max(df$valor_bi), ]
 min_row <- df[which.min(df$valor_bi), ]
 var_total <- (df$valor_fob[nrow(df)] / df$valor_fob[1] - 1) * 100
@@ -334,7 +332,7 @@ Este relatório apresenta a evolução das importações gerais brasileiras entr
 
 ```{r}
 #| label: carregar-dados
-
+#| echo: true
 dados_brutos <- read_excel("C:/Users/manoe/Downloads/V_IMPORTACAO_GERAL_2000-01_2020-12_DT20260618.xlsx")
 
 colnames(dados_brutos) <- c("ano_ref", "valor_usd")
@@ -347,7 +345,7 @@ base_anual <- dados_brutos |>
 
 ```{r}
 #| label: quadro-importacoes
-
+#| echo: true
 base_anual |>
   mutate(
     usd_fmt   = dollar(valor_usd, prefix = "US$ ", big.mark = ".", decimal.mark = ",", accuracy = 1),
@@ -393,7 +391,7 @@ A partir de 2012, e de forma mais acentuada após 2014, o gráfico registra uma 
 
 ```{r}
 #| label: resumo-estatisticas
-
+#| echo: true
 reg_maior  <- base_anual[which.max(base_anual$valor_bi), ]
 reg_menor  <- base_anual[which.min(base_anual$valor_bi), ]
 tx_periodo <- (base_anual$valor_usd[nrow(base_anual)] / base_anual$valor_usd[1] - 1) * 100
@@ -415,7 +413,7 @@ Este relatório apresenta a evolução da taxa de câmbio comercial (venda) entr
 
 ```{r}
 #| label: load-data-cambio
-
+#| echo: true
 
 dados_cambio <- read_excel("C:/Users/manoe/Downloads/transforma para xlx.xlsx")
 colnames(dados_cambio) <- c("ano_cambio", "taxa_media")
@@ -427,7 +425,7 @@ cambio_anual <- dados_cambio
 #### Quadro Taxa de Câmbio por Ano
 
 ```{r}
-
+#| echo: true
 #| label: tabela-cambio
 
 cambio_anual |>
@@ -476,7 +474,7 @@ Observa-se na tabela 3, também, um salto brusco na taxa de câmbio no final de 
 
 ```{r}
 #| label: destaques-cambio
-
+#| echo: true
 max_cambio <- cambio_anual[which.max(cambio_anual$taxa_media), ]
 min_cambio <- cambio_anual[which.min(cambio_anual$taxa_media), ]
 var_total_cambio <- (cambio_anual$taxa_media[nrow(cambio_anual)] / cambio_anual$taxa_media[1] - 1) * 100
@@ -496,7 +494,7 @@ var_total_cambio <- (cambio_anual$taxa_media[nrow(cambio_anual)] / cambio_anual$
 #| fig-width: 8
 #| fig-height: 6
 #| warning: false
-
+#| echo: true
 
 
 sintese <- df |>
@@ -575,7 +573,7 @@ O primeiro passo para esse processo é estimar, por meio do Teste de Raiz unitá
 #| label: adf-tabela
 #| message: false
 #| warning: false
-
+#| echo: true
 library(tidyverse)
 library(urca)
 library(knitr)
@@ -696,7 +694,7 @@ O resultado dessa equação será dado pela estatística F de Wald, com o valor 
 #| message: false
 #| warning: false
 #| output: false
-
+#| echo: true
 modelo_ordem   <- auto_ardl(lnM ~ lnY + lnR, data = dados_ln, max_order = 4)
 teste_fronteira <- bounds_f_test(modelo_ordem$best_model, case = 3)
 ```
@@ -706,7 +704,7 @@ teste_fronteira <- bounds_f_test(modelo_ordem$best_model, case = 3)
 #| message: false
 #| warning: false
 #| output: false
-
+#| echo: true
 estatistica_f <- teste_fronteira$statistic
 p_valor       <- teste_fronteira$p.value
 f_i0_5pct     <- teste_fronteira$parameters$crit.values[2, 1]
@@ -782,7 +780,7 @@ $$\text{Elasticidade-Renda} = \frac{\sum \text{Coeficientes de todas as defasage
 
 ```{r}
 #| label: multiplicadores
-
+#| echo: true
 multipliers(modelo_ordem$best_model) |>
   kbl(
     caption = "Tabela 6: Multiplicadores de Longo Prazo - Modelo ARDL",
@@ -828,6 +826,7 @@ O valor de 0,82% seria o ideal de crescimento para o Brasil, de acordo com a Lei
 A Tabela 7, que apresenta a evolução trimestral dos índices de volume do PIB, das importações e do câmbio real efetivo entre 2021 e 2026, ilustra de forma clara a persistência do gargalo externo na economia brasileira no cenário de projeção. Observa-se que a trajetória de crescimento do Índice de Volume do PIB, que se expande de 170,53 no início de 2021 para 194,53 em 2026, é acompanhada por um aumento ainda mais acentuado na absorção de bens estrangeiros, evidenciando a elevada elasticidade-renda das importações do país. Este fenômeno é um reflexo direto da heterogeneidade estrutural brasileira, onde a tentativa de acelerar a renda interna transborda rapidamente para o setor externo, uma vez que o parque industrial depende cronicamente de insumos e bens de capital de maior densidade tecnológica produzidos no centro (Campos; Lamonica; Campos, 2022; Jaime Jr.; Resende, 2008).
 
 ```{r}
+#| echo: true
 #| message: false
 #| warning: false
 #| output: false
@@ -948,7 +947,7 @@ colunas_nomes <- c("Trimestre",
 ```{r}
 #| message: false
 #| warning: false
-#| echo: false
+#| echo: true
 #| label: bloco-tabela-sintes
 
 
@@ -988,16 +987,17 @@ A Tabela 8, intitulada "Resultados do Teste de Raiz Unitária Dickey-Fuller Aume
 ```{r}
 #| message: false
 #| warning: false
-#| echo: false
+#| echo: true
 #| label: bloco-tabela-sintese
-#| 
+
+
 library(tidyverse)
 library(readxl)
 library(urca)
 library(knitr)
 library(kableExtra) 
 
-dados_importados <- read_excel("tabela_sintese_abnt_R.xlsx", sheet = "Tabela Síntese ABNT", skip = 2)
+dados_importados <- read_excel("C:/Users/manoe/Downloads/tabela_sintese_abnt_R.xlsx", sheet = "Tabela Síntese ABNT", skip = 2)
 
 dados_brutos <- dados_importados %>%
   select(trimestre = 1, Y = 2, M = 3, R = 4) %>%
